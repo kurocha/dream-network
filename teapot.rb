@@ -24,7 +24,7 @@ define_target "dream-network" do |target|
 	target.depends "Library/Dream"
 	
 	target.provides "Library/DreamNetwork" do
-		append linkflags "-lDreamNetwork"
+		append linkflags {install_prefix + "lib/libDreamNetwork.a"}
 	end
 end
 
