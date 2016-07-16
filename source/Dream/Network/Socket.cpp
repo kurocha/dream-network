@@ -295,12 +295,17 @@ namespace Dream {
 		void ServerSocket::set_reuse_address (bool enabled) {
 			DREAM_ASSERT(is_valid());
 
-			int val = (int)enabled;
-			int r = setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(int));
-
-			if (r == -1) {
+			int value = (int)enabled;
+			
+			if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &value, sizeof(int)) == -1) {
 				SystemError::check(__func__);
 			}
+			
+#ifdef SO_REUSEPORT
+			if (setsockopt(_socket, SOL_SOCKET, SO_REUSEPORT, &value, sizeof(int)) == -1) {
+				SystemError::check(__func__);
+			}
+#endif
 		}
 
 // MARK: -
