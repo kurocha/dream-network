@@ -30,27 +30,6 @@ namespace Dream {
 		using namespace Core::Logging;
 		using Core::SystemError;
 
-		/*
-		 void print_backtrace(void) {
-		 void *addresses[10];
-		 char **strings;
-
-		 int size = backtrace(addresses, 10);
-		 strings = backtrace_symbols(addresses, size);
-		 printf("Stack frames: %d\n", size);
-		 for(int i = 0; i < size; i++)
-		 {
-		 //printf("%d: %X\n", i, (int)addresses[i]);
-		 printf("%s\n", strings[i]);
-		 }
-		 free(strings);
-		 }
-		 */
-		//	using namespace std;
-
-// MARK: -
-// MARK: class Socket
-
 		Socket::Socket (int s) : _socket(s) {
 		}
 
