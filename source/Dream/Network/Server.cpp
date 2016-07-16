@@ -18,7 +18,6 @@ namespace Dream {
 	namespace Network {
 		using namespace Events;
 		using namespace Dream::Core::Logging;
-		using std::bind;
 
 		ServerContainer::ServerContainer () : _run(false)
 		{
