@@ -90,9 +90,24 @@ namespace Dream {
 			// IPPROTO_TCP / SOL_SOCKET
 			int result = setsockopt(_socket, SOL_SOCKET, TCP_NODELAY, (char*)&flag, sizeof(int));
 
-			if (result < 0) {
+			if (result == -1) {
 				SystemError::check(__func__);
 			}
+		}
+		
+		void Socket::set_non_blocking(bool value) {
+			int flags = fcntl(_socket, F_GETFL, 0);
+			
+			if (flags == -1)
+				SystemError::check(__func__);
+			
+			if (value)
+				flags |= O_NONBLOCK;
+			else
+				flags &= ~O_NONBLOCK;
+			
+			if (fcntl(_socket, F_SETFL, flags) == -1)
+				SystemError::check(__func__);
 		}
 
 		int Socket::socket_specific_error () const {

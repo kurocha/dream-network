@@ -75,6 +75,9 @@ namespace Dream {
 
 			/// Set the TCP NO DELAY option for the socket, if it is available.
 			void set_no_delay_mode (bool mode);
+			
+			/// Set the socket non-blocking mode.
+			void set_non_blocking(bool value = true);
 		};
 
 		/** A socket that can be bound to a local address and accept connections.
