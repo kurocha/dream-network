@@ -388,58 +388,5 @@ namespace Dream {
 
 			return s.str();
 		}
-
-// MARK: -
-// MARK: Unit Tests
-
-#ifdef ENABLE_TESTING
-
-		void debug_addresses (const char * desc, const AddressesT & addresses)
-		{
-			using namespace std;
-
-			cout << desc << endl;
-
-			foreach(a, addresses)
-			{
-				cout << a->description() << endl;
-			}
-		}
-
-		UNIT_TEST(Address) {
-			testing("Construction");
-
-			AddressesT addrs1 = Address::interface_addresses_for_port(1024, SOCK_STREAM);
-			check(addrs1.size() > 0) << "Interface addresses available";
-			debug_addresses("interface_addresses_for_port(1024, SOCK_STREAM)", addrs1);
-
-			bool found_ipv4AddressFamily;
-			foreach(a, addrs1)
-			{
-				if (a->address_family() == AF_INET)
-					found_ipv4AddressFamily = true;
-			}
-
-			check(found_ipv4AddressFamily) << "IPv4 address was present";
-
-			bool exception_thrown = false;
-			try {
-				Address::addresses_for_name("localhost", "ThisServiceDoesNotExist", SOCK_STREAM);
-			} catch (AddressResolutionError & ex)   {
-				exception_thrown = true;
-			}
-
-			check(exception_thrown) << "Address resolution failed";
-
-			AddressesT addrs2 = Address::addresses_for_name("localhost", "http", SOCK_STREAM);
-			check(addrs2.size() > 0) << "Host addresses available";
-			debug_addresses("addresses_for_name(localhost, IMAP, SOCK_STREAM)", addrs2);
-
-			AddressesT addrs3 = Address::addresses_for_uri(Core::URI("http://localhost"));
-			check(addrs3.size() > 0) << "Host addresses available";
-			debug_addresses("addresses_for_uri(http://localhost)", addrs3);
-		}
-
-#endif
 	}
 }

@@ -7,11 +7,15 @@
 //
 //
 
+#include <Dream/Core/Logger.hpp>
+#include <Dream/Core/System.hpp>
+
 #include <Dream/Network/Network.hpp>
 #include <Dream/Network/Message.hpp>
 #include <Dream/Network/Server.hpp>
 
 #include <functional>
+#include <future>
 
 #include <Euclid/Numerics/Average.hpp>
 
@@ -22,6 +26,8 @@ namespace Dream
 	namespace Network
 	{
 		using namespace Core;
+		using namespace Logging;
+		
 		using namespace Events;
 		using Euclid::Numerics::Average;
 		const unsigned PK_PING = 0xAF;
@@ -100,9 +106,9 @@ namespace Dream
 		};
 
 		static void run_efficient_client_process (int k) {
-			AddressesT server_addresses = Address::addresses_for_name("localhost", "1404", SOCK_STREAM);
+			try {
+				AddressesT server_addresses = Address::addresses_for_name("localhost", "1404", SOCK_STREAM);
 
-			{
 				Ref<Loop> clients = new Loop;
 
 				// Connect k times.
@@ -116,6 +122,8 @@ namespace Dream
 				}
 
 				clients->run_forever();
+			} catch (Dream::Core::SystemError & error) {
+				log_error(error.what());
 			}
 		}
 
@@ -174,22 +182,22 @@ namespace Dream
 						Ref<Server> server(new PingPongServer(container->event_loop(), "1404", SOCK_STREAM));
 						container->start(server);
 
-						std::vector<std::thread> children;
+						std::vector<std::future<void>> children;
 
 						sleep(1);
-						children.push_back(std::thread(run_efficient_client_process, k));
-						children.push_back(std::thread(run_efficient_client_process, k));
+						children.push_back(std::async(run_efficient_client_process, k));
+						children.push_back(std::async(run_efficient_client_process, k));
 
 						sleep(1);
-						children.push_back(std::thread(run_efficient_client_process, k));
-						children.push_back(std::thread(run_efficient_client_process, k));
+						children.push_back(std::async(run_efficient_client_process, k));
+						children.push_back(std::async(run_efficient_client_process, k));
 
 						sleep(1);
-						children.push_back(std::thread(run_efficient_client_process, k));
-						children.push_back(std::thread(run_efficient_client_process, k));
+						children.push_back(std::async(run_efficient_client_process, k));
+						children.push_back(std::async(run_efficient_client_process, k));
 
 						for(auto & thread : children) {
-							thread.join();
+							thread.get();
 						}
 
 						container->stop();

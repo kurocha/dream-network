@@ -267,40 +267,5 @@ namespace Dream {
 			if (Events::WRITE_READY & events)
 				update_sender();
 		}
-
-// MARK: -
-// MARK: Unit Tests
-
-#ifdef ENABLE_TESTING
-
-		struct PACKED MsgTest {
-			Core::Ordered<uint32_t> a;
-			Core::Ordered<uint32_t> b;
-			Core::Ordered<uint32_t> c;
-		};
-
-		UNIT_TEST(Message) {
-			testing("Construction");
-
-			Ref<Message> m1(new Message);
-
-			m1->reset_header();
-			m1->header()->packet_type = 0xDEAD;
-
-			MsgTest body;
-			body.a = 5;
-			body.b = 10;
-			body.c = body.a + body.b;
-
-			m1->insert(body);
-			m1->update_size();
-
-			check(m1->data_length() == sizeof(MsgTest)) << "Body is correct size";
-
-			check(m1->header_complete()) << "Header is complete";
-			check(m1->data_complete()) << "Data is complete";
-		}
-
-#endif
 	}
 }
