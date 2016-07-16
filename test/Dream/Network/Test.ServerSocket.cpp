@@ -25,15 +25,15 @@ namespace Dream
 			virtual void process_events(Events::Loop * event_loop, Events::Event events)
 			{
 				if (events & Events::READ_READY) {
-					Core::DynamicBuffer buf(1024, true);
+					Core::DynamicBuffer buffer(1024, true);
 
-					recv(buf);
+					recv(buffer);
 
-					std::string incominglobal_message(buf.begin(), buf.end());
+					std::string incoming_message(buffer.begin(), buffer.end());
 
 					global_message_received_count += 1;
 
-					std::cerr << "Message received by " << this << " fd " << this->file_descriptor() << " : " << incominglobal_message << std::endl;
+					std::cerr << "Message received by " << this << " fd " << this->file_descriptor() << " : " << incoming_message << std::endl;
 
 					event_loop->stop_monitoring_file_descriptor(this);
 				}
