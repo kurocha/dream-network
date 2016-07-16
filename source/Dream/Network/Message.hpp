@@ -14,6 +14,7 @@
 #include <Dream/Core/Buffer.hpp>
 
 #include <queue>
+#include <cstring>
 
 namespace Dream {
 	namespace Network {
@@ -73,7 +74,8 @@ namespace Dream {
 					return false;
 				}
 
-				memcpy(&s, _packet.begin() + offset, sz);
+				std::memcpy(&s, _packet.begin() + offset, sz);
+				
 				return true;
 			}
 
@@ -86,7 +88,7 @@ namespace Dream {
 				// Make room at the end
 				_packet.resize(offset + sz);
 
-				memcpy(&_packet[offset], &s, sz);
+				std::memcpy(&_packet[offset], &s, sz);
 				update_size();
 			}
 		};
