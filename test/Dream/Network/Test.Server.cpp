@@ -173,7 +173,7 @@ namespace Dream
 					int k = 100;
 
 					for (int i = 0; i < 2; i++) {
-						std::cerr << "Run " << i << std::endl;
+						log("Run", i);
 
 						//global_latency = Numerics::Average<TimeT>();
 
@@ -204,7 +204,7 @@ namespace Dream
 
 						{
 							scoped_lock lock(global_latency_lock);
-							std::cout << "Average latency (whole time): " << global_latency.value() * 1000.0 << "ms" << std::endl;
+							log("Average latency (whole time):", global_latency.value() * 1000.0, "ms");
 						}
 					}
 				}

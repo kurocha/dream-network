@@ -45,7 +45,7 @@ namespace Dream {
 
 				_run = true;
 
-				std::cerr << "Starting server container..." << std::endl;
+				log("Starting server container...");
 
 				DREAM_ASSERT(!_thread);
 
@@ -55,7 +55,7 @@ namespace Dream {
 
 		void ServerContainer::stop () {
 			if (_run) {
-				std::cerr << "Stopping server container..." << std::endl;
+				log("Stopping server container...");
 
 				// Stop the runloop
 				_event_loop->stop();

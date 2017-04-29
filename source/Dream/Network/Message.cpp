@@ -11,12 +11,6 @@
 
 namespace Dream {
 	namespace Network {
-		using Core::BufferT;
-
-// MARK: -
-// MARK: Message
-
-
 
 		const MessageHeader * Message::header () const {
 			DREAM_ASSERT(header_complete());

@@ -9,22 +9,13 @@
 #include <UnitTest/UnitTest.hpp>
 
 #include <Dream/Network/Address.hpp>
+#include <Dream/Core/Logger.hpp>
 
 namespace Dream
 {
 	namespace Network
 	{
-		static void debug_addresses (const char * desc, const AddressesT & addresses)
-		{
-			using namespace std;
-
-			cout << desc << endl;
-
-			for(auto & a : addresses)
-			{
-				cout << a.description() << endl;
-			}
-		}
+		using namespace Core::Logging;
 		
 		UnitTest::Suite AddressTestSuite {
 			"Dream::Network::Address",
@@ -35,8 +26,6 @@ namespace Dream
 					
 					examiner << "Interface addresses available.";
 					examiner.expect(addrs1.size()) > 0;
-					
-					debug_addresses("interface_addresses_for_port(1024, SOCK_STREAM)", addrs1);
 
 					bool found_ipv4AddressFamily;
 					for(auto & a : addrs1)
@@ -57,14 +46,10 @@ namespace Dream
 					examiner << "Host addresses available." << std::endl;
 					examiner.expect(addrs2.size()) > 0;
 					
-					debug_addresses("addresses_for_name(localhost, IMAP, SOCK_STREAM)", addrs2);
-
 					AddressesT addrs3 = Address::addresses_for_uri(Core::URI("http://localhost"));
 					
 					examiner << "Host addresses available" << std::endl;
 					examiner.expect(addrs3.size()) > 0;
-					
-					debug_addresses("addresses_for_uri(http://localhost)", addrs3);
 				}
 			},
 		};

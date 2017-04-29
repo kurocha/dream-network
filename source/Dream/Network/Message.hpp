@@ -11,13 +11,15 @@
 
 #include "Socket.hpp"
 #include <Dream/Core/Endian.hpp>
-#include <Dream/Core/Buffer.hpp>
+#include <Buffers/DynamicBuffer.hpp>
 
 #include <queue>
 #include <cstring>
 
 namespace Dream {
 	namespace Network {
+		typedef Buffers::DynamicBuffer BufferT;
+		
 		/// The message header contains the type and length of the message that has been sent or received.
 		struct alignas(32) MessageHeader {
 			/// The length in bytes.
@@ -35,7 +37,7 @@ namespace Dream {
 		 */
 		class Message : public Object {
 		protected:
-			Core::BufferT _packet;
+			BufferT _packet;
 
 		public:
 			/// The length of the header segment.
@@ -54,8 +56,8 @@ namespace Dream {
 			MessageHeader * header ();
 
 			/// Returns a pointer to the entire message data buffer.
-			const Core::BufferT & packet () const;
-			Core::BufferT & packet ();
+			const BufferT & packet () const;
+			BufferT & packet ();
 
 			/// Reset the message to zero-size.
 			void reset_header ();

@@ -15,13 +15,14 @@ define_target "dream-network" do |target|
 	end
 	
 	target.depends :platform
-	target.depends "Language/C++11"
+	target.depends "Language/C++11", private: true
 	
 	target.depends "Build/Files"
 	target.depends "Build/Clang"
 
 	target.depends "Library/DreamEvents"
 	target.depends "Library/Dream"
+	target.depends "Library/Buffers"
 	
 	target.provides "Library/DreamNetwork" do
 		append linkflags {install_prefix + "lib/libDreamNetwork.a"}
@@ -34,6 +35,8 @@ define_target "dream-network-tests" do |target|
 		
 		run tests: "DreamNetwork", source_files: test_root.glob('Dream/**/*.cpp')
 	end
+	
+	target.depends "Language/C++11", private: true
 	
 	target.depends "Library/UnitTest"
 	target.depends "Library/DreamNetwork"

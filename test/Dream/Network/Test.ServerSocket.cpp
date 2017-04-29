@@ -9,11 +9,14 @@
 #include <UnitTest/UnitTest.hpp>
 
 #include <Dream/Network/Server.hpp>
+#include <Dream/Core/Logger.hpp>
 
 namespace Dream
 {
 	namespace Network
 	{
+		using namespace Core::Logging;
+		
 		int global_message_received_count;
 		
 		class TestServerClientSocket : public ClientSocket {
@@ -25,7 +28,7 @@ namespace Dream
 			virtual void process_events(Events::Loop * event_loop, Events::Event events)
 			{
 				if (events & Events::READ_READY) {
-					Core::DynamicBuffer buffer(1024, true);
+					Buffers::DynamicBuffer buffer(1024, true);
 
 					recv(buffer);
 
@@ -33,7 +36,7 @@ namespace Dream
 
 					global_message_received_count += 1;
 
-					std::cerr << "Message received by " << this << " fd " << this->file_descriptor() << " : " << incoming_message << std::endl;
+					log("Message received by", this, "fd:", this->file_descriptor(), "message:", incoming_message);
 
 					event_loop->stop_monitoring_file_descriptor(this);
 				}
@@ -47,8 +50,11 @@ namespace Dream
 			{
 				Ref<ClientSocket> client_socket(new TestServerClientSocket(h, a));
 
-				std::cerr << "Accepted connection " << client_socket << " from " << client_socket->remote_address().description();
-				std::cerr << " (" << client_socket->remote_address().address_family_name() << ")" << std::endl;
+				log(
+					"Accepted connection:", client_socket, 
+					"from:", client_socket->remote_address().description(),
+					"address family:", client_socket->remote_address().address_family_name()
+				);
 
 				event_loop->monitor(client_socket);
 			}
@@ -68,7 +74,7 @@ namespace Dream
 
 		static void stop_timers_callback (Events::Loop * event_loop, Events::TimerSource *, Events::Event event)
 		{
-			std::cerr << "Stoping connection timers..." << std::endl;
+			log("Stoping connection timers...");
 
 			global_timers[0]->cancel();
 			global_timers[1]->cancel();
@@ -77,7 +83,7 @@ namespace Dream
 
 		static void stop_callback (Events::Loop * event_loop, Events::TimerSource *, Events::Event event)
 		{
-			std::cerr << "Stopping test" << std::endl;
+			log("Stopping test");
 			event_loop->stop();
 		}
 
@@ -90,10 +96,10 @@ namespace Dream
 
 			test_connection->connect(global_connect_addresses[global_address_index++ % global_connect_addresses.size()]);
 
-			auto buf = Core::StaticBuffer::for_cstring("Hello World?", false);
+			Buffers::StaticBuffer buffer("Hello World?", false);
 
 			global_message_sent_count += 1;
-			test_connection->send(buf);
+			test_connection->send(buffer);
 
 			test_connection->close();
 		}

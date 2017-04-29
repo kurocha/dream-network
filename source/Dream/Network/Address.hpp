@@ -14,6 +14,7 @@
 #include <Dream/Core/URI.hpp>
 
 #include <vector>
+#include <iosfwd>
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -161,5 +162,11 @@ namespace Dream {
 			/// e.g. http://www.google.com or www.google.com:80
 			static AddressesT addresses_for_uri (const URI &, SocketType socket_type = SOCK_STREAM);
 		};
+		
+		inline std::ostream & operator<<(std::ostream & out, Address address) {
+			out << address.description();
+			
+			return out;
+		}
 	}
 }

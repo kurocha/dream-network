@@ -9,29 +9,33 @@
 #include <UnitTest/UnitTest.hpp>
 
 #include <Dream/Network/Socket.hpp>
+#include <Dream/Core/Logger.hpp>
 
 namespace Dream
 {
 	namespace Network
 	{
+		using namespace Core::Logging;
+		
 		bool global_message_sent;
 		std::size_t global_message_length_sent, global_message_length_received;
 		bool global_client_connected;
 		bool global_message_received;
 		
 		const std::string global_message("Hello World!");
+		std::string global_incoming_message;
 		
 		class TestClientSocket : public ClientSocket {
 		public:
 			TestClientSocket (const SocketHandleT & h, const Address & address) : ClientSocket(h, address)
 			{
-				Core::StaticBuffer buf = Core::StaticBuffer::for_cstring(global_message.c_str(), false);
+				Buffers::StaticBuffer buffer(global_message.data(), false);
 
-				std::cerr << "Sending message from " << this << "..." << std::endl;
+				log("Sending", buffer.size(), "byte message from:", this, "...");
 
-				global_message_length_sent = send(buf);
+				global_message_length_sent = send(buffer);
 
-				std::cerr << global_message_length_sent << " bytes sent" << std::endl;
+				log(global_message_length_sent, "bytes sent");
 				global_message_sent = true;
 			}
 
@@ -42,18 +46,17 @@ namespace Dream
 			virtual void process_events(Events::Loop * event_loop, Events::Event events)
 			{
 				if (events & Events::READ_READY) {
-					Core::DynamicBuffer buf(1024, true);
+					Core::DynamicBuffer buffer(1024, true);
 
-					recv(buf);
+					recv(buffer);
 
 					global_message_received = true;
-					global_message_length_received = buf.size();
+					
+					global_message_length_received = buffer.size();
 
-					std::string incominglobal_message(buf.begin(), buf.end());
+					global_incoming_message = std::string(buffer.begin(), buffer.end());
 
-					std::cerr << "Message received by " << this << " fd " << this->file_descriptor() << " : " << incominglobal_message << std::endl;
-
-					global_message_received = (global_message == incominglobal_message);
+					log("Message received by", this, "fd:", this->file_descriptor(), "message:", global_incoming_message);
 
 					event_loop->stop_monitoring_file_descriptor(this);
 				}
@@ -67,7 +70,7 @@ namespace Dream
 			virtual void process_events(Events::Loop * event_loop, Events::Event events)
 			{
 				if (events & Events::READ_READY & !_test_socket) {
-					std::cerr << "Test server has received connection..." << std::endl;
+					log("Test server has received connection...");
 					global_client_connected = true;
 
 					SocketHandleT h;
@@ -79,7 +82,7 @@ namespace Dream
 
 					event_loop->stop_monitoring_file_descriptor(this);
 				} else {
-					std::cerr << "More than one connection received!" << std::endl;
+					log("More than one connection received!");
 				}
 			}
 
@@ -89,13 +92,13 @@ namespace Dream
 
 			virtual ~TestServerSocket ()
 			{
-				std::cerr << "Server shutting down..." << std::endl;
+				log("Server shutting down...");
 			}
 		};
 		
 		static void stop_callback (Events::Loop * event_loop, Events::TimerSource *, Events::Event event)
 		{
-			std::cerr << "Stopping test" << std::endl;
+			log("Stopping test");
 			event_loop->stop();
 		}
 		
@@ -114,12 +117,12 @@ namespace Dream
 
 					{
 						Address localhost = Address::interface_addresses_for_port(2000, SOCK_STREAM)[0];
-						std::cerr << "Initializing server..." << std::endl;
+						log("Initializing server...");
 						Ref<TestServerSocket> server_socket = new TestServerSocket(localhost);
-						std::cerr << "Initializing client..." << std::endl;
+						log("Initializing client...");
 						Ref<TestClientSocket> client_socket = new TestClientSocket;
 
-						std::cerr << "Connecting to server..." << std::endl;
+						log("Connecting to server...");
 						client_socket->connect(localhost);
 
 						event_loop->monitor(server_socket);
@@ -141,6 +144,7 @@ namespace Dream
 					
 					examiner << "Message received.";
 					examiner.check(global_message_received);
+					examiner.expect(global_incoming_message) == global_message;
 				}
 			},
 		};
