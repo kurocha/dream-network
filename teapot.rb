@@ -3,7 +3,7 @@
 #  This file is part of the "Teapot" project, and is released under the MIT license.
 #
 
-teapot_version "1.0"
+teapot_version "1.3"
 
 define_target "dream-network" do |target|
 	target.build do |environment|
