@@ -107,7 +107,7 @@ namespace Dream
 
 		static void run_efficient_client_process (int k) {
 			try {
-				AddressesT server_addresses = Address::addresses_for_name("localhost", "1404", SOCK_STREAM);
+				AddressesT server_addresses = Address::addresses_for_name("localhost", "2404", SOCK_STREAM);
 
 				Ref<Loop> clients = new Loop;
 
@@ -179,7 +179,7 @@ namespace Dream
 
 						Ref<ServerContainer> container(new ServerContainer);
 
-						Ref<Server> server(new PingPongServer(container->event_loop(), "1404", SOCK_STREAM));
+						Ref<Server> server(new PingPongServer(container->event_loop(), "2404", SOCK_STREAM));
 						container->start(server);
 
 						std::vector<std::future<void>> children;
