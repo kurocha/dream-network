@@ -86,7 +86,10 @@ namespace Dream {
 			AddressesT server_addresses = Address::interface_addresses_for_service(service, sock_type);
 
 			for (auto address : server_addresses) {
-				Ref<ServerSocket> server_socket(new ServerSocket(address));
+				log("Binding to address", address.description());
+				
+				Ref<ServerSocket> server_socket = new ServerSocket(address);
+				
 				server_socket->connection_callback = std::bind(&Server::connection_callback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
 
 				_server_sockets.push_back(server_socket);

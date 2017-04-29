@@ -211,8 +211,8 @@ namespace Dream {
 // MARK: -
 // MARK: class ServerSocket
 
-		ServerSocket::ServerSocket (const Address &server_address, unsigned listen_count) {
-			bind(server_address);
+		ServerSocket::ServerSocket (const Address &server_address, unsigned listen_count, bool reuse_address) {
+			bind(server_address, reuse_address);
 			listen(listen_count);
 
 			set_will_block(false);
@@ -236,22 +236,22 @@ namespace Dream {
 			}
 		}
 
-		void ServerSocket::bind (const Address & na, bool reuse_addr) {
-			open_socket(na);
+		void ServerSocket::bind (const Address & address, bool reuse_address) {
+			open_socket(address);
 
-			DREAM_ASSERT(is_valid() && na.is_valid());
+			DREAM_ASSERT(is_valid() && address.is_valid());
 
-			if (reuse_addr) {
+			if (reuse_address) {
 				set_reuse_address(true);
 			}
 
-			if (::bind(_socket, na.address_data(), na.address_data_size()) == -1) {
+			if (::bind(_socket, address.address_data(), address.address_data_size()) == -1) {
 				SystemError::check(__func__);
 				
 				return;
 			}
 
-			_bound_address = na;
+			_bound_address = address;
 		}
 
 		void ServerSocket::listen (unsigned n) {
