@@ -145,10 +145,10 @@ namespace Dream {
 
 			/// Returns addresses for binding a server on the local machine. Supply a port number.
 			/// @sa ServerSocket::bind
-			static AddressesT interface_addresses_for_port (PortNumber port, SocketType sock_type = SOCK_STREAM);
+			static AddressesT interface_addresses_for (PortNumber port, SocketType sock_type = SOCK_STREAM);
 			/// Returns addresses for binding a server on the local machine. Supply a service name.
 			/// @sa ServerSocket::bind
-			static AddressesT interface_addresses_for_service (const char * service, SocketType sock_type = SOCK_STREAM);
+			static AddressesT interface_addresses_for (const char * service, SocketType sock_type = SOCK_STREAM);
 
 			/// Returns addresses for connecting to a remote service.
 			/// @sa ClientSocket::connect

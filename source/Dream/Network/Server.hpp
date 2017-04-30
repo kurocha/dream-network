@@ -47,7 +47,11 @@ namespace Dream {
 			/// You need to call this in your subclass to bind to the appropriate ports/services.
 			/// This call will schedule any new ServerSocket instances in the attached runloop.
 			void bind_to_service (const char * service, SocketType sock_type);
-
+			void bind_to_service (PortNumber port_number, SocketType sock_type);
+			
+			// Bind to the given address. Returns the bound ServerSocket.
+			Ref<ServerSocket> bind_to_address (const Address & address);
+			
 		public:
 			/// A server attaches to a runloop. It then should schedule incoming connections on the runloop.
 			Server (Ref<Events::Loop> event_loop);

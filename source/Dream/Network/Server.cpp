@@ -83,19 +83,33 @@ namespace Dream {
 
 		void Server::bind_to_service (const char * service, SocketType sock_type)
 		{
-			AddressesT server_addresses = Address::interface_addresses_for_service(service, sock_type);
+			AddressesT server_addresses = Address::interface_addresses_for(service, sock_type);
 
 			for (auto address : server_addresses) {
-				log("Binding to address", address.description());
-				
-				Ref<ServerSocket> server_socket = new ServerSocket(address);
-				
-				server_socket->connection_callback = std::bind(&Server::connection_callback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
-
-				_server_sockets.push_back(server_socket);
-
-				_event_loop->monitor(server_socket);
+				bind_to_address(address);
 			}
+		}
+		
+		void Server::bind_to_service (PortNumber port_number, SocketType sock_type)
+		{
+			AddressesT server_addresses = Address::interface_addresses_for(port_number, sock_type);
+
+			for (auto address : server_addresses) {
+				bind_to_address(address);
+			}
+		}
+		
+		Ref<ServerSocket> Server::bind_to_address (const Address & address)
+		{
+			Ref<ServerSocket> server_socket = new ServerSocket(address);
+			
+			server_socket->connection_callback = std::bind(&Server::connection_callback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
+
+			_server_sockets.push_back(server_socket);
+
+			_event_loop->monitor(server_socket);
+			
+			return server_socket;
 		}
 	}
 }
