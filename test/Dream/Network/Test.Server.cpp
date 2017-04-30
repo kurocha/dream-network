@@ -107,7 +107,7 @@ namespace Dream
 
 		static void run_efficient_client_process (int k) {
 			try {
-				AddressesT server_addresses = Address::addresses_for_name("localhost", "2404", SOCK_STREAM);
+				AddressesT server_addresses = Address::addresses_for_name("127.1", "2404", SOCK_STREAM);
 
 				Ref<Loop> clients = new Loop;
 
@@ -157,7 +157,11 @@ namespace Dream
 		public:
 			PingPongServer (Ref<Loop> event_loop, const Service & service, SocketType socket_type) : Server(event_loop)
 			{
-				bind_to_service(service, socket_type);
+				auto addresses = Address::addresses_for_name("127.1", service, socket_type);
+				
+				for (auto & address : addresses) {
+					bind_to_address(address);
+				}
 			}
 
 			virtual ~PingPongServer ()

@@ -62,7 +62,11 @@ namespace Dream
 		public:
 			TestServer (Ref<Events::Loop> event_loop, const Service & service, SocketType socket_type) : Server(event_loop)
 			{
-				bind_to_service(service, socket_type);
+				auto addresses = Address::addresses_for_name("127.1", service, socket_type);
+				
+				for (auto & address : addresses) {
+					bind_to_address(address);
+				}
 			}
 
 			virtual ~TestServer ()
@@ -116,7 +120,7 @@ namespace Dream
 					global_message_received_count = 0;
 					global_message_sent_count = 0;
 
-					global_connect_addresses = Address::addresses_for_name("localhost", "7979", SOCK_STREAM);
+					global_connect_addresses = Address::addresses_for_name("127.1", "7979", SOCK_STREAM);
 
 					event_loop->schedule_timer(new Events::TimerSource(stop_timers_callback, 0.4));
 					event_loop->schedule_timer(new Events::TimerSource(stop_callback, 0.5));

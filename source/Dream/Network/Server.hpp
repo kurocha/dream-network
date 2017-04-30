@@ -42,7 +42,11 @@ namespace Dream {
 
 			/// Override this function to handle incoming connection requests.
 			virtual void connection_callback (Events::Loop *, ServerSocket *, const SocketHandleT & h, const Address &) = 0;
-
+			
+		public:
+			/// A server attaches to a runloop. It then should schedule incoming connections on the runloop.
+			Server (Ref<Events::Loop> event_loop);
+			
 			/// Creates a set of sockets bound to the appropriate service.
 			/// You need to call this in your subclass to bind to the appropriate ports/services.
 			/// This call will schedule any new ServerSocket instances in the attached runloop.
@@ -52,10 +56,6 @@ namespace Dream {
 			// Bind to the given address. Returns the bound ServerSocket.
 			Ref<ServerSocket> bind_to_address (const Address & address);
 			
-		public:
-			/// A server attaches to a runloop. It then should schedule incoming connections on the runloop.
-			Server (Ref<Events::Loop> event_loop);
-
 			virtual ~Server ();
 		};
 
