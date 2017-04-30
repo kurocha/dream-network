@@ -10,6 +10,7 @@
 #pragma once
 
 #include "Network.hpp"
+#include "Service.hpp"
 #include <Dream/Core/Strings.hpp>
 #include <Dream/Core/URI.hpp>
 
@@ -46,8 +47,6 @@ namespace Dream {
 		typedef int SocketType;
 		/// IPPROTO_TCP, IPPROTO_UDP, IPPROTO_IPX, etc
 		typedef int SocketProtocol;
-		/// A TCP/UDP port number
-		typedef int PortNumber;
 
 		class Address;
 		/// An array of addresses
@@ -143,19 +142,16 @@ namespace Dream {
 			/// A string that represents the address in a lossy human-readable form.
 			std::string description () const;
 
-			/// Returns addresses for binding a server on the local machine. Supply a port number.
+			/// Returns addresses for binding a server on the local machine.
 			/// @sa ServerSocket::bind
-			static AddressesT interface_addresses_for (PortNumber port, SocketType sock_type = SOCK_STREAM);
-			/// Returns addresses for binding a server on the local machine. Supply a service name.
-			/// @sa ServerSocket::bind
-			static AddressesT interface_addresses_for (const char * service, SocketType sock_type = SOCK_STREAM);
+			static AddressesT interface_addresses_for (const Service & service, SocketType sock_type = SOCK_STREAM);
 
 			/// Returns addresses for connecting to a remote service.
 			/// @sa ClientSocket::connect
-			static AddressesT addresses_for_name (const char * host, const char * service, SocketType sock_type = SOCK_STREAM);
+			static AddressesT addresses_for_name (const char * host, const Service & service, SocketType sock_type = SOCK_STREAM);
 			/// Returns addresses for connecting to a remote service.
 			/// @sa ClientSocket::connect
-			static AddressesT addresses_for_name (const char * host, const char * service, addrinfo * hints);
+			static AddressesT addresses_for_name (const char * host, const Service & service, addrinfo * hints);
 
 			/// Returns addresses for a given URI.
 			/// Format of the URI is service://hostname/

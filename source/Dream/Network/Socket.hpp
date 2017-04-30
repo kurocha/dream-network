@@ -96,7 +96,7 @@ namespace Dream {
 
 		public:
 			/// Create a socket that is bound to the supplied address.
-			/// @sa Address::interface_addresses_for_port
+			/// @sa Address::interface_addresses_for
 			ServerSocket (const Address &server_address, unsigned listen_count = 1000, bool reuse_address = true);
 			virtual ~ServerSocket ();
 

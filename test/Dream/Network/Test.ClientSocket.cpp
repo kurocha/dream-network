@@ -116,7 +116,7 @@ namespace Dream
 					// This server can only accept one connection
 
 					{
-						Address localhost = Address::interface_addresses_for_port(2000, SOCK_STREAM)[0];
+						Address localhost = Address::interface_addresses_for(2000, SOCK_STREAM)[0];
 						log("Initializing server...");
 						Ref<TestServerSocket> server_socket = new TestServerSocket(localhost);
 						log("Initializing client...");

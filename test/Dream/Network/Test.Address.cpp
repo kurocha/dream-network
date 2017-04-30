@@ -22,7 +22,7 @@ namespace Dream
 			
 			{"it should resolve interface addresses",
 				[](UnitTest::Examiner & examiner) {
-					AddressesT addrs1 = Address::interface_addresses_for_port(1024, SOCK_STREAM);
+					AddressesT addrs1 = Address::interface_addresses_for(1024, SOCK_STREAM);
 					
 					examiner << "Interface addresses available.";
 					examiner.expect(addrs1.size()) > 0;

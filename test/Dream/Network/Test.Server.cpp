@@ -155,9 +155,9 @@ namespace Dream
 			}
 
 		public:
-			PingPongServer (Ref<Loop> event_loop, const char * service_name, SocketType socket_type) : Server(event_loop)
+			PingPongServer (Ref<Loop> event_loop, const Service & service, SocketType socket_type) : Server(event_loop)
 			{
-				bind_to_service(service_name, socket_type);
+				bind_to_service(service, socket_type);
 			}
 
 			virtual ~PingPongServer ()

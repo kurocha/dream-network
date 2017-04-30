@@ -144,7 +144,7 @@ namespace Dream {
 		}
 
 		AddressesT Address::addresses_for_uri(const URI & uri, SocketType socket_type) {
-			return addresses_for_name(uri.hostname().c_str(), uri.service().c_str(), socket_type);
+			return addresses_for_name(uri.hostname().c_str(), uri.service(), socket_type);
 		}
 
 		const char * Address::socket_type_name(SocketType st) {
@@ -207,14 +207,14 @@ namespace Dream {
 			}
 		}
 
-		AddressesT Address::addresses_for_name(const char * host, const char * service, addrinfo * hints) {
+		AddressesT Address::addresses_for_name(const char * host, const Service & service, addrinfo * hints) {
 			struct addrinfo *res, *res0;
 			int error;
 			AddressesT addrs;
 
-			if (!host && !service) service = "0";
+			//if (!host && !service) service = "0";
 
-			error = getaddrinfo(host, service, hints, &res);
+			error = getaddrinfo(host, service.name().c_str(), hints, &res);
 
 			res0 = res;
 
@@ -235,7 +235,7 @@ namespace Dream {
 			return addrs;
 		}
 
-		AddressesT Address::addresses_for_name(const char * host, const char * service, SocketType sock_type) {
+		AddressesT Address::addresses_for_name(const char * host, const Service & service, SocketType sock_type) {
 			struct addrinfo hints;
 
 			memset (&hints, 0, sizeof(hints));
@@ -354,7 +354,7 @@ namespace Dream {
 			return host_string;
 		}
 
-		AddressesT Address::interface_addresses_for_service(const char * service, SocketType sock_type) {
+		AddressesT Address::interface_addresses_for(const Service & service, SocketType sock_type) {
 			struct addrinfo hints;
 
 			memset(&hints, 0, sizeof(hints));
@@ -365,14 +365,6 @@ namespace Dream {
 			hints.ai_socktype = sock_type;
 
 			return addresses_for_name(NULL, service, &hints);
-		}
-
-		AddressesT Address::interface_addresses_for_port(PortNumber port, SocketType sock_type) {
-			std::stringstream s;
-
-			s << port;
-
-			return interface_addresses_for_service(s.str().c_str(), sock_type);
 		}
 
 		std::string Address::description () const {

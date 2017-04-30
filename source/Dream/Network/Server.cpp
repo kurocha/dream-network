@@ -81,7 +81,7 @@ namespace Dream {
 			}
 		}
 
-		void Server::bind_to_service (const char * service, SocketType sock_type)
+		void Server::bind_to_service (const Service & service, SocketType sock_type)
 		{
 			AddressesT server_addresses = Address::interface_addresses_for(service, sock_type);
 
