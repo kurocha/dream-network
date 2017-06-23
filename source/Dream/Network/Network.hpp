@@ -21,6 +21,8 @@
 namespace Dream {
 	/// Network related functions for clients and servers.
 	namespace Network {
+		using namespace Dream::Core;
+		
 		/** Indicates that a connection error of some sort has occurred.
 
 		 */
